@@ -88,3 +88,6 @@ Deploy a Python web application securely on AWS using:
 ---
 
 **This project can be used as a showcase in my GitHub portfolio for AWS VPC & Scaling expertise.**
+
+![image](https://github.com/user-attachments/assets/27dc4a8b-c9ef-4b39-bbaa-4d09c24e920a)
+
