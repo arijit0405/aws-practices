@@ -1,7 +1,5 @@
 AWS Hands-On Progress Log - Arijit Chakraborty
 
-Date: 15/6/2025
-
 -------------------------------------------------
 
 ✔️ **AWS Services Practiced:**
