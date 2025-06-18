@@ -53,7 +53,7 @@ def hello():
     return "Hello from AWS CI/CD Pipeline!"
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
 ```
 
 ---
@@ -192,22 +192,9 @@ GitHub → CodeBuild → CodeDeploy → EC2
 ✅ Pipeline automatically triggered  
 ✅ CodeBuild built and created artifacts  
 ✅ CodeDeploy copied and ran Flask on EC2  
-✅ Application accessible via **EC2 Public DNS** on port **8000**
+✅ Application accessible via **EC2 Public DNS** on port **5000**
 
 ---
 
-## 📸 Screenshot
-
-> *(Add your own screenshot below of the AWS CodePipeline dashboard)*
-
-```markdown
-![Pipeline Screenshot](https://github.com/your-username/your-repo/assets/your-screenshot.png)
-```
-
----
-
-## 🙌 Congratulations!
-
-You’ve successfully built and deployed a Flask application using a **fully automated CI/CD pipeline** on AWS!
 
 
