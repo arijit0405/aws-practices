@@ -1,5 +1,3 @@
-![image](https://github.com/user-attachments/assets/b2357b04-7dbe-449c-8e6f-6da267b796d2)
-
 End-to-End AWS CI/CD Pipeline Project (Flask App → EC2)
 📌 Project Overview
 This project demonstrates how to implement a full CI/CD pipeline using AWS DevOps services to:
@@ -138,11 +136,11 @@ Attach: AmazonEC2RoleforAWSCodeDeploy
 
 
 CodeDeploy Role:
-Attach: CodeDeployRole, AmazonEC2FullAccess, AmazonS3ReadOnlyAccess
+Attach: AWSCodeDeployRole, AmazonEC2FullAccess, AmazonS3ReadOnlyAccess
 
 
 CodeBuild Role:
-Attach: CodeBuildAdminAccess, AmazonEC2ContainerRegistryReadOnly, SSMReadOnlyAccess
+Attach: AWSCodeBuildAdminAccess, AmazonEC2ContainerRegistryReadOnly, AmazonS3ReadOnlyAccess
 
 
 
@@ -170,13 +168,12 @@ CodeBuild built and created artifacts
 CodeDeploy copied and ran Flask on EC2
 Application accessible via EC2 Public DNS on port 8000
 
+📸 Screenshot
+
 🧠 Learnings
 
 CI/CD on AWS using native services
 Troubleshooting IAM permission issues
 How appspec.yml works with EC2 + hooks
 Fully automated deployments from GitHub to EC2
-
-
-
 
