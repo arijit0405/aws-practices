@@ -31,6 +31,7 @@ In this project, we use:
 - **SNS** to send email alerts.
 
 ---
+![Screenshot 2025-06-19 142331](https://github.com/user-attachments/assets/ccff6be4-1063-464d-8f3b-a345e2e95f89)
 
 ## 🔨 Steps Performed
 
@@ -47,4 +48,3 @@ Inside the EC2 instance:
 sudo yum update -y
 sudo yum install python3 -y
 
-![Screenshot 2025-06-19 142331](https://github.com/user-attachments/assets/855d2cc9-b0ae-4260-9c85-a7ccb1a34659)
