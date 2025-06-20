@@ -1,8 +1,5 @@
 
 
-![Screenshot 2025-06-20 120529](https://github.com/user-attachments/assets/d7f8dc2b-ef23-4e79-81b9-33d56cb20ea7)
-
-
 # Comprehensive Guide to CDN and CloudFront on AWS for Beginners
 
 If you've never heard of CDN or CloudFront before, don't worry. we'll start from scratch and gradually build up your understanding. By the end, you'll be well-versed in these technologies. So lets get started.
@@ -91,6 +88,4 @@ If you offer software downloads, CloudFront can distribute your files faster, re
 ## 8. Conclusion
 
 By using CloudFront, you can dramatically improve your website's performance, making users happier and potentially boosting your application and business.
-
-![Screenshot 2025-06-20 115927](https://github.com/user-attachments/assets/1d29f114-3e6a-4606-a16a-7c69155016af)
 
