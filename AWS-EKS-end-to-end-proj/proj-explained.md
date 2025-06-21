@@ -1,83 +1,109 @@
-AWS EKS End-to-End Project: 2048 Game Deployment
-This project demonstrates how to deploy a containerized 2048 game application on Amazon Elastic Kubernetes Service (EKS) using AWS Fargate and expose it to the internet with an Application Load Balancer (ALB) Controller.
-Project Structure
+# AWS EKS End-to-End Project: 2048 Game Deployment
 
-2048-app-deploy-ingress.md: Details the deployment and ingress configuration for the 2048 game application.
-README.md: This file, providing an overview and step-by-step explanation of the project.
-alb-controller-add-on.md: Explains the setup and usage of the ALB Controller as an add-on for Kubernetes.
-configure-oidc-connector.md: Describes the configuration of the OIDC connector for IAM roles.
-installing-eks.md: Outlines the installation and setup process for the EKS cluster.
-prerequisites.md: Lists the necessary tools and configurations required before starting the project.
-sample-app.md: Contains details about the sample 2048 game application being deployed.
+This project demonstrates how to deploy a containerized **2048 game application** on **Amazon Elastic Kubernetes Service (EKS)** using **AWS Fargate** and expose it to the internet with an **Application Load Balancer (ALB) Controller**.
 
-Prerequisites
-Before starting, ensure the following tools are installed and configured:
+---
 
-AWS CLI: Configured with aws configure to manage AWS services.
-Use: Enables interaction with AWS services via the command line.
+## 📁 Project Structure
 
+- `2048-app-deploy-ingress.md`: Deployment and ingress configuration for the 2048 game application.
+- `README.md`: This file, providing an overview and step-by-step explanation of the project.
+- `alb-controller-add-on.md`: Setup and usage of the ALB Controller as an add-on for Kubernetes.
+- `configure-oidc-connector.md`: Configuration of the OIDC connector for IAM roles.
+- `installing-eks.md`: Installation and setup process for the EKS cluster.
+- `prerequisites.md`: Necessary tools and configurations required before starting.
+- `sample-app.md`: Details about the sample 2048 game application being deployed.
 
-eksctl: A command-line tool for creating and managing EKS clusters.
-Use: Simplifies EKS cluster creation and management.
+---
 
+## ✅ Prerequisites
 
-kubectl: Kubernetes command-line tool for interacting with the cluster.
-Use: Allows deployment and management of applications on Kubernetes.
+Ensure the following tools are installed and configured:
 
+| Tool       | Purpose                                                        |
+|------------|----------------------------------------------------------------|
+| **AWS CLI** | Interact with AWS services (`aws configure`)                 |
+| **eksctl**  | Create and manage EKS clusters                                |
+| **kubectl** | Interact with Kubernetes cluster                              |
+| **helm**    | Package manager for Kubernetes apps (e.g., ALB Controller)   |
 
-helm: Package manager for Kubernetes.
-Use: Facilitates the installation of Kubernetes applications like the ALB Controller.
+---
 
+## 🚀 Steps to Deploy the 2048 Game
 
+### 1. Create EKS Cluster Using `eksctl`
 
-Steps to Deploy the 2048 Game
-1. Create EKS Cluster using eksctl
+```bash
 eksctl create cluster --name my-application-cluster --region ap-south-1
+```
 
+> Creates an EKS cluster with VPC, subnets, IAM roles, node groups, etc. (~15 min)
 
-Use: Creates an EKS cluster with a VPC, subnets, internet gateway, security groups, route tables, IAM roles, and an optional node group. This process takes about 15 minutes and sets up the foundational infrastructure.
+---
 
-2. Update Kubeconfig to Access the Cluster
+### 2. Update Kubeconfig to Access the Cluster
+
+```bash
 aws eks update-kubeconfig --name my-application-cluster --region ap-south-1
+```
 
+> Updates `~/.kube/config` to allow `kubectl` to talk to the cluster.
 
-Use: Updates your local kubeconfig file to allow kubectl to communicate with the newly created EKS cluster.
+---
 
-3. Create a Fargate Profile for the Namespace
+### 3. Create Fargate Profile for the Namespace
+
+```bash
 eksctl create fargateprofile \
   --cluster demo-cluster \
   --region us-east-1 \
   --name alb-sample-app \
   --namespace game-2048
+```
 
+> Configures Fargate to run pods in `game-2048` namespace serverlessly.
 
-Use: Configures a Fargate profile to run pods serverlessly in the game-2048 namespace, leveraging AWS Fargate for cost efficiency and scalability.
+---
 
-4. Deploy the 2048 App (YAML Manifest)
+### 4. Deploy the 2048 App (YAML Manifest)
+
+```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+```
 
+> Deploys namespace, deployment, service, and ingress.
 
-Use: Deploys the 2048 game application, creating a deployment, namespace (game-2048), service, and ingress resources that will later be managed by the ALB.
+---
 
-5. Associate IAM OIDC Provider
+### 5. Associate IAM OIDC Provider
+
+```bash
 eksctl utils associate-iam-oidc-provider \
   --cluster demo-cluster \
   --approve
+```
 
+> Associates IAM OIDC for secure access via IAM roles for service accounts.
 
-Use: Associates an IAM OIDC provider with the EKS cluster, enabling Kubernetes service accounts to assume IAM roles for secure AWS resource access.
+---
 
-6. Create IAM Policy for ALB Controller
+### 6. Create IAM Policy for ALB Controller
+
+```bash
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.11.0/docs/install/iam_policy.json
 
 aws iam create-policy \
   --policy-name AWSLoadBalancerControllerIAMPolicy \
   --policy-document file://iam_policy.json
+```
 
+> Creates IAM policy with ALB permissions.
 
-Use: Creates an IAM policy that defines the permissions the ALB Controller needs to manage AWS resources like load balancers and target groups.
+---
 
-7. Create IAM Service Account
+### 7. Create IAM Service Account
+
+```bash
 eksctl create iamserviceaccount \
   --cluster=demo-cluster \
   --namespace=kube-system \
@@ -85,19 +111,24 @@ eksctl create iamserviceaccount \
   --role-name AmazonEKSLoadBalancerControllerRole \
   --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
+```
 
+> Links service account with IAM role and policy.
 
-Use: Sets up an IAM service account for the ALB Controller, linking it to the IAM role and policy for secure AWS resource management.
+---
 
-8. Deploy AWS ALB Controller
-Add Helm Chart Repo
+### 8. Deploy AWS ALB Controller
+
+#### Add Helm Repo
+
+```bash
 helm repo add eks https://aws.github.io/eks-charts
 helm repo update eks
+```
 
+#### Install Controller
 
-Use: Adds and updates the Helm repository containing the ALB Controller chart for installation.
-
-Install Controller
+```bash
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
   --set clusterName=demo-cluster \
@@ -105,27 +136,42 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set region=ap-south-1 \
   --set vpcId=<your-vpc-id>
+```
 
+> Installs ALB Controller with your cluster and VPC.
 
-Use: Installs the ALB Controller using Helm, configuring it to work with the EKS cluster and VPC.
+---
 
-9. Verify the Controller is Running
+### 9. Verify the Controller is Running
+
+```bash
 kubectl get deployment -n kube-system aws-load-balancer-controller
+```
 
+> Ensures ALB controller is deployed and running.
 
-Use: Checks the status of the ALB Controller deployment to ensure it is running correctly.
+---
 
-10. Access Your 2048 App
+### 10. Access Your 2048 App
 
-Steps: Retrieve the ALB DNS name created by the ALB Ingress Controller and open it in your browser.
-Use: Allows you to play the 2048 game hosted on the EKS cluster via a public endpoint.
+- Retrieve the ALB DNS name created by the controller:
+  ```bash
+  kubectl get ingress -n game-2048
+  ```
+- Open the `ADDRESS` in your browser.
 
-Outcome
+> Play the 2048 game via public endpoint!
 
-Successfully set up an EKS cluster.
-Deployed the 2048 game application using Fargate.
-Configured IAM OIDC and custom roles for secure access.
-Integrated the ALB Ingress Controller for public access.
-Accessed the application via a public ALB endpoint.
+---
 
-🎉 Congratulations on completing the deployment!
+## ✅ Outcome
+
+- ✔️ EKS cluster created and configured
+- ✔️ 2048 game deployed using AWS Fargate
+- ✔️ IAM OIDC and custom policies configured
+- ✔️ ALB Ingress Controller integrated
+- ✔️ Public access enabled via ALB
+
+---
+
+🎉 **Congratulations! You've successfully deployed the 2048 app on AWS EKS using Fargate and ALB!**
