@@ -175,3 +175,6 @@ kubectl get deployment -n kube-system aws-load-balancer-controller
 ---
 
 🎉 **Congratulations! You've successfully deployed the 2048 app on AWS EKS using Fargate and ALB!**
+
+
+![Screenshot 2025-06-21 113532](https://github.com/user-attachments/assets/83772c51-5d53-4303-8754-700fb1dad494)
